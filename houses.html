@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Roof4U - Property Management</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-brand">
+            <h1><i class="fas fa-house"></i> Roof4U</h1>
+        </div>
+        <ul class="nav-menu">
+            <li><a href="roof4u.html">Dashboard</a></li>
+            <li><a href="houses.html" class="active">Properties</a></li>
+            <li><a href="rent.html">Rent Now</a></li>
+            <li><a href="tenants.html">Tenants</a></li>
+            <li><a href="payments.html">Payments</a></li>
+            <li><a href="maintenance.html">Maintenance</a></li>
+        </ul>
+        <div class="nav-user">
+            <span id="currentUser"><i class="fas fa-user-circle"></i> Admin</span>
+            <button id="logoutBtn" class="btn-logout"><i class="fas fa-sign-out-alt"></i> Logout</button>
+        </div>
+    </nav>
+    
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <h2><i class="fas fa-building"></i> Property Management</h2>
+            <p>Manage your rental properties, view details, and track occupancy</p>
+            <div class="header-actions">
+                <button id="addPropertyBtn" class="btn-primary">
+                    <i class="fas fa-plus"></i> Add New Property
+                </button>
+                <button id="exportPropertiesBtn" class="btn-secondary">
+                    <i class="fas fa-file-export"></i> Export
+                </button>
+            </div>
+        </div>
+        
+        <!-- Property Statistics -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-home"></i>
+                </div>
+                <div>
+                    <h3 id="totalProperties">4</h3>
+                    <p>Total Properties</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-user-check"></i>
+                </div>
+                <div>
+                    <h3 id="occupiedProperties">2</h3>
+                    <p>Occupied</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-door-open"></i>
+                </div>
+                <div>
+                    <h3 id="availableProperties">1</h3>
+                    <p>Available</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-tools"></i>
+                </div>
+                <div>
+                    <h3 id="maintenanceProperties">1</h3>
+                    <p>Under Maintenance</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div>
+                    <h3 id="monthlyRevenue">$5,400</h3>
+                    <p>Monthly Revenue</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <i class="fas fa-percentage"></i>
+                </div>
+                <div>
+                    <h3 id="occupancyRate">75%</h3>
+                    <p>Occupancy Rate</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Property Filters -->
+        <div class="filter-container">
+            <h3><i class="fas fa-filter"></i> Filter Properties</h3>
+            <div class="filter-controls">
+                <div class="filter-group">
+                    <label for="filterStatus"><i class="fas fa-tag"></i> Status</label>
+                    <select id="filterStatus">
+                        <option value="">All Statuses</option>
+                        <option value="occupied">Occupied</option>
+                        <option value="available">Available</option>
+                        <option value="maintenance">Under Maintenance</option>
+                        <option value="vacant">Vacant</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="filterType"><i class="fas fa-house-user"></i> Type</label>
+                    <select id="filterType">
+                        <option value="">All Types</option>
+                        <option value="apartment">Apartment</option>
+                        <option value="house">House</option>
+                        <option value="condo">Condo</option>
+                        <option value="townhouse">Townhouse</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="filterBedrooms"><i class="fas fa-bed"></i> Bedrooms</label>
+                    <select id="filterBedrooms">
+                        <option value="">Any</option>
+                        <option value="1">1 Bedroom</option>
+                        <option value="2">2 Bedrooms</option>
+                        <option value="3">3+ Bedrooms</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="filterCity"><i class="fas fa-map-marker-alt"></i> City</label>
+                    <select id="filterCity">
+                        <option value="">All Cities</option>
+                        <option value="new york">New York</option>
+                        <option value="los angeles">Los Angeles</option>
+                        <option value="chicago">Chicago</option>
+                        <option value="miami">Miami</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <button id="applyFiltersBtn" class="btn-primary">
+                        <i class="fas fa-search"></i> Apply Filters
+                    </button>
+                    <button id="resetFiltersBtn" class="btn-secondary">
+                        <i class="fas fa-redo"></i> Reset
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- View Toggle -->
+        <div class="view-toggle">
+            <button id="gridViewBtn" class="view-btn active" title="Grid View">
+                <i class="fas fa-th-large"></i>
+            </button>
+            <button id="listViewBtn" class="view-btn" title="List View">
+                <i class="fas fa-list"></i>
+            </button>
+        </div>
+        
+        <!-- Properties Grid View -->
+        <div id="propertiesGridView" class="properties-grid">
+            <!-- Property cards will be dynamically generated -->
+        </div>
+        
+        <!-- Properties List View (Hidden by default) -->
+        <div id="propertiesListView" class="properties-list" style="display: none;">
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Property</th>
+                            <th>Address</th>
+                            <th>Type</th>
+                            <th>Bed/Bath</th>
+                            <th>Sq Ft</th>
+                            <th>Monthly Rent</th>
+                            <th>Status</th>
+                            <th>Tenant</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="propertiesTableBody">
+                        <!-- Properties will be populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Quick Actions -->
+        <div class="section-container">
+            <h3><i class="fas fa-bolt"></i> Quick Actions</h3>
+            <div class="quick-actions">
+                <a href="#add-property" class="action-card" id="quickAddProperty">
+                    <div class="action-icon">
+                        <i class="fas fa-home"></i>
+                    </div>
+                    <h4>Add Property</h4>
+                    <p>Add a new rental property</p>
+                </a>
+                <a href="#generate-reports" class="action-card" id="generateReports">
+                    <div class="action-icon">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <h4>Generate Reports</h4>
+                    <p>Property performance reports</p>
+                </a>
+                <a href="#upload-documents" class="action-card" id="uploadDocuments">
+                    <div class="action-icon">
+                        <i class="fas fa-file-upload"></i>
+                    </div>
+                    <h4>Upload Documents</h4>
+                    <p>Property documents & photos</p>
+                </a>
+                <a href="#schedule-inspection" class="action-card" id="scheduleInspection">
+                    <div class="action-icon">
+                        <i class="fas fa-clipboard-check"></i>
+                    </div>
+                    <h4>Schedule Inspection</h4>
+                    <p>Property inspection schedule</p>
+                </a>
+            </div>
+        </div>
+        
+        <!-- Upcoming Vacancies -->
+        <div class="section-container">
+            <div class="section-header">
+                <h3><i class="fas fa-calendar-alt"></i> Upcoming Vacancies</h3>
+                <button id="viewAllVacancies" class="btn-secondary">View All</button>
+            </div>
+            <div id="upcomingVacancies" class="vacancies-list">
+                <!-- Upcoming vacancies will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- Add/Edit Property Modal -->
+    <div id="propertyModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-home"></i> <span id="modalTitle">Add New Property</span></h3>
+                <span class="modal-close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="propertyForm">
+                    <input type="hidden" id="propertyId" value="">
+                    
+                    <div class="form-tabs">
+                        <button type="button" class="tab-btn active" data-tab="basic">Basic Info</button>
+                        <button type="button" class="tab-btn" data-tab="details">Property Details</button>
+                        <button type="button" class="tab-btn" data-tab="financial">Financial</button>
+                        <button type="button" class="tab-btn" data-tab="amenities">Amenities</button>
+                    </div>
+                    
+                    <!-- Basic Info Tab -->
+                    <div class="tab-content active" id="basicTab">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="address"><i class="fas fa-map-marker-alt"></i> Address *</label>
+                                <input type="text" id="address" required placeholder="123 Main Street">
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="city"><i class="fas fa-city"></i> City *</label>
+                                <input type="text" id="city" required placeholder="New York">
+                            </div>
+                            <div class="form-group">
+                                <label for="state"><i class="fas fa-flag"></i> State *</label>
+                                <input type="text" id="state" required placeholder="NY">
+                            </div>
+                            <div class="form-group">
+                                <label for="zip"><i class="fas fa-mail-bulk"></i> ZIP Code *</label>
+                                <input type="text" id="zip" required placeholder="10001">
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="propertyType"><i class="fas fa-house-user"></i> Property Type *</label>
+                                <select id="propertyType" required>
+                                    <option value="">Select Type</option>
+                                    <option value="apartment">Apartment</option>
+                                    <option value="house">House</option>
+                                    <option value="condo">Condo</option>
+                                    <option value="townhouse">Townhouse</option>
+                                    <option value="duplex">Duplex</option>
+                                    <option value="studio">Studio</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="status"><i class="fas fa-tag"></i> Status *</label>
+                                <select id="status" required>
+                                    <option value="available">Available</option>
+                                    <option value="occupied">Occupied</option>
+                                    <option value="maintenance">Under Maintenance</option>
+                                    <option value="vacant">Vacant</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Property Details Tab -->
+                    <div class="tab-content" id="detailsTab">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="bedrooms"><i class="fas fa-bed"></i> Bedrooms</label>
+                                <input type="number" id="bedrooms" min="0" max="10" placeholder="2">
+                            </div>
+                            <div class="form-group">
+                                <label for="bathrooms"><i class="fas fa-bath"></i> Bathrooms</label>
+                                <input type="number" id="bathrooms" min="0" max="10" step="0.5" placeholder="1">
+                            </div>
+                            <div class="form-group">
+                                <label for="squareFeet"><i class="fas fa-ruler-combined"></i> Square Feet</label>
+                                <input type="number" id="squareFeet" min="0" placeholder="850">
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="yearBuilt"><i class="fas fa-calendar"></i> Year Built</label>
+                                <input type="number" id="yearBuilt" min="1800" max="2024" placeholder="2010">
+                            </div>
+                            <div class="form-group">
+                                <label for="petsAllowed"><i class="fas fa-paw"></i> Pets Allowed</label>
+                                <select id="petsAllowed">
+                                    <option value="true">Yes</option>
+                                    <option value="false">No</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="furnished"><i class="fas fa-couch"></i> Furnished</label>
+                                <select id="furnished">
+                                    <option value="false">No</option>
+                                    <option value="true">Yes</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group form-full">
+                                <label for="description"><i class="fas fa-file-alt"></i> Description</label>
+                                <textarea id="description" rows="4" placeholder="Describe the property..."></textarea>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="owner"><i class="fas fa-user-tie"></i> Property Owner</label>
+                                <input type="text" id="owner" placeholder="John Doe Properties LLC">
+                            </div>
+                            <div class="form-group">
+                                <label for="ownerContact"><i class="fas fa-envelope"></i> Owner Contact</label>
+                                <input type="email" id="ownerContact" placeholder="owner@email.com">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Financial Tab -->
+                    <div class="tab-content" id="financialTab">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="rentAmount"><i class="fas fa-dollar-sign"></i> Monthly Rent *</label>
+                                <input type="number" id="rentAmount" min="0" step="0.01" required placeholder="2200">
+                            </div>
+                            <div class="form-group">
+                                <label for="securityDeposit"><i class="fas fa-shield-alt"></i> Security Deposit</label>
+                                <input type="number" id="securityDeposit" min="0" step="0.01" placeholder="2200">
+                            </div>
+                            <div class="form-group">
+                                <label for="petDeposit"><i class="fas fa-paw"></i> Pet Deposit</label>
+                                <input type="number" id="petDeposit" min="0" step="0.01" placeholder="500">
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group form-full">
+                                <label><i class="fas fa-bolt"></i> Utilities Included</label>
+                                <div class="checkbox-group">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="utilities" value="water"> Water
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="utilities" value="electricity"> Electricity
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="utilities" value="gas"> Gas
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="utilities" value="trash"> Trash
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="utilities" value="internet"> Internet
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="availableFrom"><i class="fas fa-calendar-check"></i> Available From</label>
+                                <input type="date" id="availableFrom">
+                            </div>
+                            <div class="form-group">
+                                <label for="propertyManager"><i class="fas fa-user-cog"></i> Property Manager</label>
+                                <input type="text" id="propertyManager" placeholder="Jane Smith">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Amenities Tab -->
+                    <div class="tab-content" id="amenitiesTab">
+                        <div class="form-row">
+                            <div class="form-group form-full">
+                                <label><i class="fas fa-star"></i> Select Amenities</label>
+                                <div class="checkbox-grid">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="amenities" value="parking"> Parking
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="amenities" value="pool"> Swimming Pool
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="amenities" value="gym"> Gym
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="amenities" value="laundry"> Laundry
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="amenities" value="ac"> Central AC
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="amenities" value="heating"> Heating
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="amenities" value="balcony"> Balcony
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="amenities" value="patio"> Patio
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="amenities" value="garden"> Garden
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="amenities" value="garage"> Garage
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="amenities" value="elevator"> Elevator
+                                    </label>
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" name="amenities" value="security"> Security System
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group form-full">
+                                <label for="notes"><i class="fas fa-sticky-note"></i> Additional Notes</label>
+                                <textarea id="notes" rows="3" placeholder="Any additional notes about the property..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" id="prevTab" class="btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Previous
+                        </button>
+                        <button type="button" id="nextTab" class="btn-secondary">
+                            Next <i class="fas fa-arrow-right"></i>
+                        </button>
+                        <button type="submit" class="btn-primary">
+                            <i class="fas fa-save"></i> Save Property
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Property Detail Modal -->
+    <div id="propertyDetailModal" class="modal large-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-home"></i> <span id="detailTitle">Property Details</span></h3>
+                <span class="modal-close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="property-detail">
+                    <!-- Property details will be populated by JavaScript -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="editPropertyBtn" class="btn-primary">
+                    <i class="fas fa-edit"></i> Edit Property
+                </button>
+                <button id="addTenantBtn" class="btn-success">
+                    <i class="fas fa-user-plus"></i> Add Tenant
+                </button>
+                <button id="createMaintenanceBtn" class="btn-secondary">
+                    <i class="fas fa-tools"></i> Create Maintenance
+                </button>
+                <button id="printPropertyBtn" class="btn-secondary">
+                    <i class="fas fa-print"></i> Print Details
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Simple Footer -->
+<footer class="simple-footer">
+    <div class="footer-container">
+        <div class="footer-content">
+            <div class="footer-logo">
+                <h3><i class="fas fa-home"></i> Roof4U</h3>
+                <p>Property Management System</p>
+            </div>
+            
+            <div class="footer-links">
+                <a href="roof4u.html">Dashboard</a>
+                <a href="houses.html">Properties</a>
+                <a href="rent.html">Rent Now</a>
+                <a href="tenants.html">Tenants</a>
+                <a href="payments.html">Payments</a>
+                <a href="maintenance.html">Maintenance</a>
+            </div>
+            
+            <div class="footer-info">
+                <p><i class="fas fa-envelope"></i> support@roof4u.com</p>
+                <p><i class="fas fa-phone"></i> (555) 123-4567</p>
+                <p class="copyright">© 2026 Roof4U. All rights reserved.</p>
+            </div>
+        </div>
+    </div>
+</footer>
+    
+    <script src="roof4u.js"></script>
+    
+</body>
+</html>

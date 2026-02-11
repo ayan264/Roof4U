@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roof4U - Tenant & Lease Management</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-brand">
+            <h1><i class="fas fa-house"></i> Roof4U</h1>
+        </div>
+        <ul class="nav-menu">
+            <li><a href="roof4u.html">Dashboard</a></li>
+            <li><a href="houses.html">Properties</a></li>
+            <li><a href="rent.html"> Rent Now</a></li>
+            <li><a href="tenants.html" class="active">Tenants</a></li>
+            <li><a href="payments.html">Payments</a></li>
+            <li><a href="maintenance.html">Maintenance</a></li>
+        </ul>
+        <div class="nav-user">
+            <span id="currentUser">Admin</span>
+            <button id="logoutBtn" class="btn-logout">Logout</button>
+        </div>
+    </nav>
+    
+    <!-- Main Content -->
+    <div class="container">
+        <div class="page-header">
+            <h2>Tenant & Lease Management</h2>
+            <p>Manage tenants, leases, and rental agreements</p>
+        </div>
+        
+        <!-- Quick Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3 id="totalTenants">0</h3>
+                <p>Total Tenants</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="activeLeases">0</h3>
+                <p>Active Leases</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="expiringLeases">0</h3>
+                <p>Leases Expiring Soon</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="vacancyRate">0%</h3>
+                <p>Vacancy Rate</p>
+            </div>
+        </div>
+        
+        <!-- Add New Tenant Form -->
+        <div class="form-container">
+            <h3>Add New Tenant / Lease</h3>
+            <form id="tenantForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="tenantName">Tenant Name *</label>
+                        <input type="text" id="tenantName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="tenantEmail">Email Address *</label>
+                        <input type="email" id="tenantEmail" required>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="tenantPhone">Phone Number *</label>
+                        <input type="tel" id="tenantPhone" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="tenantEmergencyContact">Emergency Contact</label>
+                        <input type="text" id="tenantEmergencyContact">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="tenantProperty">Property *</label>
+                        <select id="tenantProperty" required>
+                            <option value="">Select Property</option>
+                            <!-- Properties will be populated by JavaScript -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="tenantRent">Monthly Rent ($) *</label>
+                        <input type="number" id="tenantRent" min="0" step="0.01" required>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="leaseStart">Lease Start Date *</label>
+                        <input type="date" id="leaseStart" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="leaseEnd">Lease End Date *</label>
+                        <input type="date" id="leaseEnd" required>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="securityDeposit">Security Deposit ($)</label>
+                        <input type="number" id="securityDeposit" min="0" step="0.01">
+                    </div>
+                    <div class="form-group">
+                        <label for="petDeposit">Pet Deposit ($)</label>
+                        <input type="number" id="petDeposit" min="0" step="0.01">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group form-full">
+                        <label for="tenantNotes">Additional Notes</label>
+                        <textarea id="tenantNotes" rows="3"></textarea>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">Add Tenant & Create Lease</button>
+                    <button type="button" id="clearForm" class="btn-secondary">Clear Form</button>
+                </div>
+            </form>
+        </div>
+        
+        <!-- Tenants List -->
+        <div class="section-container">
+            <div class="section-header">
+                <h3>Current Tenants</h3>
+                <input type="text" id="searchTenants" placeholder="Search tenants..." class="search-box">
+            </div>
+            
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Tenant Name</th>
+                            <th>Property</th>
+                            <th>Contact</th>
+                            <th>Lease Period</th>
+                            <th>Monthly Rent</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tenantsTableBody">
+                        <!-- Tenants will be populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="table-footer">
+                <div class="pagination">
+                    <button id="prevPage" class="btn-pagination">Previous</button>
+                    <span id="pageInfo">Page 1 of 1</span>
+                    <button id="nextPage" class="btn-pagination">Next</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Lease Renewal Reminders -->
+        <div class="section-container">
+            <h3>Upcoming Lease Expirations (Next 90 Days)</h3>
+            <div id="leaseExpirations" class="card-grid">
+                <!-- Expiring leases will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- Tenant Detail Modal -->
+    <div id="tenantModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Tenant Details</h3>
+                <span class="modal-close">&times;</span>
+            </div>
+            <div class="modal-body" id="tenantModalBody">
+                <!-- Tenant details will be populated by JavaScript -->
+            </div>
+            <div class="modal-footer">
+                <button id="editTenant" class="btn-primary">Edit</button>
+                <button id="terminateLease" class="btn-danger">Terminate Lease</button>
+                <button id="renewLease" class="btn-success">Renew Lease</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Simple Footer -->
+<footer class="simple-footer">
+    <div class="footer-container">
+        <div class="footer-content">
+            <div class="footer-logo">
+                <h3><i class="fas fa-home"></i> Roof4U</h3>
+                <p>Property Management System</p>
+            </div>
+            
+            <div class="footer-links">
+                <a href="roof4u.html">Dashboard</a>
+                <a href="houses.html">Properties</a>
+                <a href="rent.html">Rent Now</a>
+                <a href="tenants.html">Tenants</a>
+                <a href="payments.html">Payments</a>
+                <a href="maintenance.html">Maintenance</a>
+            </div>
+            
+            <div class="footer-info">
+                <p><i class="fas fa-envelope"></i> support@roof4u.com</p>
+                <p><i class="fas fa-phone"></i> (555) 123-4567</p>
+                <p class="copyright">© 2026 Roof4U. All rights reserved.</p>
+            </div>
+        </div>
+    </div>
+</footer>
+    
+    <script src="roof4u.js"></script>
+    
+</body>
+</html>

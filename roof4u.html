@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roof4U - Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+     <nav class="navbar">
+        <div class="nav-brand">
+            <h1><i class="fas fa-house"></i> Roof4U</h1>
+        </div>
+        <ul class="nav-menu">
+            <li><a href="roof4u.html" class="active">Dashboard</a></li>
+            <li><a href="houses.html">Properties</a></li>
+            <li><a href="rent.html"> Rent Now</a></li>
+            <li><a href="tenants.html">Tenants</a></li>
+            <li><a href="payments.html">Payments</a></li>
+            <li><a href="maintenance.html">Maintenance</a></li>
+        </ul>
+        <div class="nav-user">
+            <span id="currentUser">Admin</span>
+            <button id="logoutBtn" class="btn-logout">Logout</button>
+        </div>
+    </nav>
+    
+    <!-- Dashboard Content -->
+    <div class="dashboard">
+        <div class="dashboard-header">
+            <h2>Property Management Dashboard</h2>
+            <p>Welcome back! Here's your property overview.</p>
+        </div>
+        
+        <!-- Stats Cards -->
+        <div class="stats-grid" id="statsContainer">
+            <!-- Stats will be populated by JavaScript -->
+        </div>
+        
+        <!-- Recent Activities -->
+        <div class="dashboard-section">
+            <h3>Recent Activities</h3>
+            <div class="activity-list" id="activityList">
+                <!-- Activities will be populated by JavaScript -->
+            </div>
+        </div>
+        
+        <!-- Quick Actions -->
+        <div class="dashboard-section">
+            <h3>Quick Actions</h3>
+            <div class="quick-actions">
+                <a href="houses.html" class="action-card">
+                    <span>🏠</span>
+                    <h4>Add Property</h4>
+                </a>
+                <a href="rent.html" class="action-card">
+                    <span>👤</span>
+                    <h4>Add Tenant</h4>
+                </a>
+                <a href="payments.html" class="action-card">
+                    <span>💰</span>
+                    <h4>Record Payment</h4>
+                </a>
+                <a href="maintenance.html" class="action-card">
+                    <span>🔧</span>
+                    <h4>Create Maintenance Ticket</h4>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Simple Footer -->
+<footer class="simple-footer">
+    <div class="footer-container">
+        <div class="footer-content">
+            <div class="footer-logo">
+                <h3><i class="fas fa-home"></i> Roof4U</h3>
+                <p>Property Management System</p>
+            </div>
+            
+            <div class="footer-links">
+                <a href="roof4u.html">Dashboard</a>
+                <a href="houses.html">Properties</a>
+                <a href="rent.html">Rent Now</a>
+                <a href="tenants.html">Tenants</a>
+                <a href="payments.html">Payments</a>
+                <a href="maintenance.html">Maintenance</a>
+            </div>
+            
+            <div class="footer-info">
+                <p><i class="fas fa-envelope"></i> support@roof4u.com</p>
+                <p><i class="fas fa-phone"></i> (555) 123-4567</p>
+                <p class="copyright">© 2026 Roof4U. All rights reserved.</p>
+            </div>
+        </div>
+    </div>
+</footer>
+    
+    <script src="roof4u.js"></script>
+    
+</body>
+</html>

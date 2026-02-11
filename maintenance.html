@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roof4U - Maintenance Management</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-brand">
+            <h1><i class="fas fa-house"></i> Roof4U</h1>
+        </div>
+        <ul class="nav-menu">
+            <li><a href="roof4u.html">Dashboard</a></li>
+            <li><a href="houses.html">Properties</a></li>
+            <li><a href="rent.html"> Rent Now</a></li>
+            <li><a href="tenants.html">Tenants</a></li>
+            <li><a href="payments.html">Payments</a></li>
+            <li><a href="maintenance.html" class="active">Maintenance</a></li>
+        </ul>
+        <div class="nav-user">
+            <span id="currentUser">Admin</span>
+            <button id="logoutBtn" class="btn-logout">Logout</button>
+        </div>
+    </nav>
+    
+    <!-- Main Content -->
+    <div class="container">
+        <div class="page-header">
+            <h2>Maintenance Management</h2>
+            <p>Track, manage, and resolve maintenance requests</p>
+        </div>
+        
+        <!-- Maintenance Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3 id="openTickets">0</h3>
+                <p>Open Tickets</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="urgentTickets">0</h3>
+                <p>Urgent Tickets</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="avgResolutionTime">0d</h3>
+                <p>Avg. Resolution Time</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="maintenanceCost">$0</h3>
+                <p>Monthly Maintenance Cost</p>
+            </div>
+        </div>
+        
+        <!-- Create Maintenance Ticket Form -->
+        <div class="form-container">
+            <h3>Create Maintenance Ticket</h3>
+            <form id="maintenanceForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="maintenanceProperty">Property *</label>
+                        <select id="maintenanceProperty" required>
+                            <option value="">Select Property</option>
+                            <!-- Properties will be populated by JavaScript -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="maintenanceTenant">Reported By</label>
+                        <select id="maintenanceTenant">
+                            <option value="">Select Tenant</option>
+                            <!-- Tenants will be populated by JavaScript -->
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="issueCategory">Issue Category *</label>
+                        <select id="issueCategory" required>
+                            <option value="">Select Category</option>
+                            <option value="plumbing">Plumbing</option>
+                            <option value="electrical">Electrical</option>
+                            <option value="heating_cooling">Heating/Cooling</option>
+                            <option value="appliances">Appliances</option>
+                            <option value="structural">Structural</option>
+                            <option value="pest_control">Pest Control</option>
+                            <option value="general">General Maintenance</option>
+                            <option value="emergency">Emergency</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="issuePriority">Priority *</label>
+                        <select id="issuePriority" required>
+                            <option value="low">Low</option>
+                            <option value="medium" selected>Medium</option>
+                            <option value="high">High</option>
+                            <option value="emergency">Emergency</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group form-full">
+                        <label for="issueDescription">Issue Description *</label>
+                        <textarea id="issueDescription" rows="4" required placeholder="Please describe the issue in detail..."></textarea>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="reportedDate">Reported Date *</label>
+                        <input type="date" id="reportedDate" required value="">
+                    </div>
+                    <div class="form-group">
+                        <label for="preferredDate">Preferred Date</label>
+                        <input type="date" id="preferredDate">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="assignedTo">Assigned To</label>
+                        <select id="assignedTo">
+                            <option value="">Select Vendor/Technician</option>
+                            <option value="in_house">In-House Maintenance</option>
+                            <option value="plumbing_co">ABC Plumbing Co.</option>
+                            <option value="electrician">XYZ Electricians</option>
+                            <option value="hvac_co">Cool HVAC Services</option>
+                            <option value="general_contractor">General Contractor</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="estimatedCost">Estimated Cost ($)</label>
+                        <input type="number" id="estimatedCost" min="0" step="0.01">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group form-full">
+                        <label for="specialInstructions">Special Instructions/Access Notes</label>
+                        <textarea id="specialInstructions" rows="3" placeholder="Access codes, pet information, or special instructions..."></textarea>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">Create Maintenance Ticket</button>
+                    <button type="button" id="emergencyTicket" class="btn-danger">Create Emergency Ticket</button>
+                </div>
+            </form>
+        </div>
+        
+        <!-- Maintenance Ticket Filters -->
+        <div class="filter-container">
+            <div class="filter-controls">
+                <select id="filterStatus">
+                    <option value="">All Statuses</option>
+                    <option value="open">Open</option>
+                    <option value="in_progress">In Progress</option>
+                    <option value="pending_review">Pending Review</option>
+                    <option value="resolved">Resolved</option>
+                    <option value="closed">Closed</option>
+                </select>
+                <select id="filterPriority">
+                    <option value="">All Priorities</option>
+                    <option value="low">Low</option>
+                    <option value="medium">Medium</option>
+                    <option value="high">High</option>
+                    <option value="emergency">Emergency</option>
+                </select>
+                <select id="filterCategory">
+                    <option value="">All Categories</option>
+                    <option value="plumbing">Plumbing</option>
+                    <option value="electrical">Electrical</option>
+                    <option value="heating_cooling">Heating/Cooling</option>
+                    <option value="appliances">Appliances</option>
+                    <option value="structural">Structural</option>
+                </select>
+                <select id="filterProperty">
+                    <option value="">All Properties</option>
+                    <!-- Properties will be populated by JavaScript -->
+                </select>
+                <button id="applyMaintenanceFilters" class="btn-primary">Apply Filters</button>
+                <button id="resetMaintenanceFilters" class="btn-secondary">Reset</button>
+            </div>
+        </div>
+        
+        <!-- Maintenance Tickets Table -->
+        <div class="table-responsive">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Ticket ID</th>
+                        <th>Property</th>
+                        <th>Issue</th>
+                        <th>Category</th>
+                        <th>Priority</th>
+                        <th>Reported Date</th>
+                        <th>Assigned To</th>
+                        <th>Status</th>
+                        <th>Estimated Cost</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="maintenanceTableBody">
+                    <!-- Maintenance tickets will be populated by JavaScript -->
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Active Tickets by Priority -->
+        <div class="section-container">
+            <h3>Active Tickets by Priority</h3>
+            <div class="priority-grid">
+                <div class="priority-card emergency">
+                    <h4>Emergency</h4>
+                    <div id="emergencyTickets" class="ticket-list">
+                        <!-- Emergency tickets will be populated by JavaScript -->
+                    </div>
+                </div>
+                <div class="priority-card high">
+                    <h4>High Priority</h4>
+                    <div id="highTickets" class="ticket-list">
+                        <!-- High priority tickets will be populated by JavaScript -->
+                    </div>
+                </div>
+                <div class="priority-card medium">
+                    <h4>Medium Priority</h4>
+                    <div id="mediumTickets" class="ticket-list">
+                        <!-- Medium priority tickets will be populated by JavaScript -->
+                    </div>
+                </div>
+                <div class="priority-card low">
+                    <h4>Low Priority</h4>
+                    <div id="lowTickets" class="ticket-list">
+                        <!-- Low priority tickets will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Vendor Management -->
+        <div class="section-container">
+            <h3>Vendor Management</h3>
+            <div class="vendor-grid" id="vendorList">
+                <!-- Vendors will be populated by JavaScript -->
+            </div>
+            <button id="addVendor" class="btn-primary">Add New Vendor</button>
+        </div>
+        
+        <!-- Maintenance Schedule -->
+        <div class="section-container">
+            <h3>Scheduled Maintenance</h3>
+            <div class="calendar-container">
+                <div class="calendar-header">
+                    <button id="prevMonth" class="btn-calendar">◀</button>
+                    <h4 id="currentMonth">February 2024</h4>
+                    <button id="nextMonth" class="btn-calendar">▶</button>
+                </div>
+                <div id="maintenanceCalendar" class="calendar">
+                    <!-- Calendar will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Maintenance Ticket Modal -->
+    <div id="ticketModal" class="modal large-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Maintenance Ticket #<span id="ticketId">000</span></h3>
+                <span class="modal-close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="ticket-details">
+                    <div class="ticket-info">
+                        <div class="info-section">
+                            <h4>Issue Details</h4>
+                            <p><strong>Description:</strong> <span id="modalDescription"></span></p>
+                            <p><strong>Category:</strong> <span id="modalCategory"></span></p>
+                            <p><strong>Priority:</strong> <span id="modalPriority"></span></p>
+                            <p><strong>Reported By:</strong> <span id="modalReportedBy"></span></p>
+                            <p><strong>Reported Date:</strong> <span id="modalReportedDate"></span></p>
+                        </div>
+                        
+                        <div class="info-section">
+                            <h4>Property Information</h4>
+                            <p><strong>Property:</strong> <span id="modalProperty"></span></p>
+                            <p><strong>Tenant:</strong> <span id="modalTenant"></span></p>
+                            <p><strong>Contact:</strong> <span id="modalContact"></span></p>
+                        </div>
+                        
+                        <div class="info-section">
+                            <h4>Assignment & Status</h4>
+                            <p><strong>Assigned To:</strong> <span id="modalAssignedTo"></span></p>
+                            <p><strong>Status:</strong> <span id="modalStatus"></span></p>
+                            <p><strong>Scheduled Date:</strong> <span id="modalScheduledDate"></span></p>
+                            <p><strong>Estimated Cost:</strong> <span id="modalEstimatedCost"></span></p>
+                            <p><strong>Actual Cost:</strong> <span id="modalActualCost"></span></p>
+                        </div>
+                    </div>
+                    
+                    <div class="ticket-updates">
+                        <h4>Updates & Notes</h4>
+                        <div id="ticketUpdates" class="updates-list">
+                            <!-- Updates will be populated by JavaScript -->
+                        </div>
+                        
+                        <div class="update-form">
+                            <h5>Add Update</h5>
+                            <textarea id="updateNotes" placeholder="Add update or note..."></textarea>
+                            <div class="update-actions">
+                                <select id="updateStatus">
+                                    <option value="in_progress">In Progress</option>
+                                    <option value="pending_review">Pending Review</option>
+                                    <option value="resolved">Resolved</option>
+                                    <option value="closed">Closed</option>
+                                </select>
+                                <input type="number" id="updateCost" placeholder="Actual Cost ($)">
+                                <button id="addUpdate" class="btn-primary">Add Update</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="assignTicket" class="btn-primary">Assign to Vendor</button>
+                <button id="scheduleTicket" class="btn-success">Schedule Visit</button>
+                <button id="closeTicket" class="btn-secondary">Close Ticket</button>
+                <button id="printTicket" class="btn-secondary">Print Ticket</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Simple Footer -->
+<footer class="simple-footer">
+    <div class="footer-container">
+        <div class="footer-content">
+            <div class="footer-logo">
+                <h3><i class="fas fa-home"></i> Roof4U</h3>
+                <p>Property Management System</p>
+            </div>
+            
+            <div class="footer-links">
+                <a href="roof4u.html">Dashboard</a>
+                <a href="houses.html">Properties</a>
+                <a href="rent.html">Rent Now</a>
+                <a href="tenants.html">Tenants</a>
+                <a href="payments.html">Payments</a>
+                <a href="maintenance.html">Maintenance</a>
+            </div>
+            
+            <div class="footer-info">
+                <p><i class="fas fa-envelope"></i> support@roof4u.com</p>
+                <p><i class="fas fa-phone"></i> (555) 123-4567</p>
+                <p class="copyright">© 2026 Roof4U. All rights reserved.</p>
+            </div>
+        </div>
+    </div>
+</footer>
+    
+    <script src="roof4u.js"></script>
+    
+</body>
+</html>
