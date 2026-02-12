@@ -354,6 +354,231 @@ class Roof4U {
             this.updateProperty(id, p);
         }
     }
+
+    // ========== FORGOT PASSWORD & RESET ==========
+
+async requestPasswordReset(email) {
+    try {
+        const response = await fetch(`${this.API_URL}/users?email=${email}`);
+        const users = await response.json();
+        
+        if (users.length === 0) {
+            return { success: false, message: 'No account found with that email address.' };
+        }
+        
+        const user = users[0];
+        const token = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+        const expires = new Date();
+        expires.setHours(expires.getHours() + 1);
+        
+        // Store reset token
+        const resetData = {
+            email: user.email,
+            token: token,
+            expires: expires.toISOString(),
+            used: false
+        };
+        
+        const resetTokens = JSON.parse(localStorage.getItem('roof4u_reset_tokens') || '[]');
+        resetTokens.push(resetData);
+        localStorage.setItem('roof4u_reset_tokens', JSON.stringify(resetTokens));
+        
+        // Show reset link in console (simulate email)
+        console.log('📧 PASSWORD RESET LINK:');
+        console.log(`http://localhost:5500/reset-password.html?token=${token}&email=${encodeURIComponent(user.email)}`);
+        
+        return { 
+            success: true, 
+            message: 'Password reset link has been sent to your email. Check console for link (demo mode).',
+            token: token,
+            email: user.email 
+        };
+        
+    } catch (error) {
+        console.error('Password reset error:', error);
+        return { success: false, message: 'An error occurred. Please try again.' };
+    }
+}
+
+async resetPassword(email, token, newPassword) {
+    try {
+        const resetTokens = JSON.parse(localStorage.getItem('roof4u_reset_tokens') || '[]');
+        const tokenIndex = resetTokens.findIndex(t => 
+            t.email === email && 
+            t.token === token && 
+            !t.used && 
+            new Date(t.expires) > new Date()
+        );
+        
+        if (tokenIndex === -1) {
+            return { success: false, message: 'Invalid or expired reset token.' };
+        }
+        
+        const userResponse = await fetch(`${this.API_URL}/users?email=${email}`);
+        const users = await userResponse.json();
+        
+        if (users.length === 0) {
+            return { success: false, message: 'User not found.' };
+        }
+        
+        const user = users[0];
+        user.password = newPassword;
+        
+        await fetch(`${this.API_URL}/users/${user.id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(user)
+        });
+        
+        resetTokens[tokenIndex].used = true;
+        localStorage.setItem('roof4u_reset_tokens', JSON.stringify(resetTokens));
+        
+        return { success: true, message: 'Password has been reset successfully. You can now login.' };
+        
+    } catch (error) {
+        console.error('Reset password error:', error);
+        return { success: false, message: 'An error occurred. Please try again.' };
+    }
+}
+
+async registerUser(userData) {
+    try {
+        // Check if username exists
+        let res = await fetch(`${this.API_URL}/users?username=${userData.username}`);
+        let users = await res.json();
+        if (users.length > 0) {
+            return { success: false, message: 'Username already taken.' };
+        }
+        
+        // Check if email exists
+        res = await fetch(`${this.API_URL}/users?email=${userData.email}`);
+        users = await res.json();
+        if (users.length > 0) {
+            return { success: false, message: 'Email already registered.' };
+        }
+        
+        // Create new user
+        const newUser = {
+            id: Date.now(),
+            username: userData.username,
+            password: userData.password,
+            name: userData.name,
+            email: userData.email,
+            role: 'user',
+            created_at: new Date().toISOString().split('T')[0]
+        };
+        
+        await fetch(`${this.API_URL}/users`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(newUser)
+        });
+        
+        return { success: true, message: 'Account created successfully! You can now login.' };
+        
+    } catch (error) {
+        console.error('Registration error:', error);
+        return { success: false, message: 'An error occurred. Please try again.' };
+    }
+}
+
+// Add event listeners for password reset
+setupPasswordResetListeners() {
+    // Forgot password form
+    const forgotForm = document.getElementById('forgotPasswordForm');
+    if (forgotForm) {
+        forgotForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('forgotEmail').value;
+            const alertDiv = document.getElementById('forgotAlert');
+            
+            const result = await this.requestPasswordReset(email);
+            
+            alertDiv.style.display = 'block';
+            alertDiv.className = `alert alert-${result.success ? 'success' : 'danger'}`;
+            alertDiv.innerHTML = `<i class="fas fa-${result.success ? 'check-circle' : 'exclamation-circle'}"></i> ${result.message}`;
+            
+            if (result.success) {
+                forgotForm.reset();
+            }
+        });
+    }
+    
+    // Register form
+    const registerForm = document.getElementById('registerFormElement');
+    if (registerForm) {
+        registerForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const password = document.getElementById('regPassword').value;
+            const confirm = document.getElementById('regConfirmPassword').value;
+            
+            if (password !== confirm) {
+                const alertDiv = document.getElementById('registerAlert');
+                alertDiv.style.display = 'block';
+                alertDiv.className = 'alert alert-danger';
+                alertDiv.innerHTML = '<i class="fas fa-exclamation-circle"></i> Passwords do not match!';
+                return;
+            }
+            
+            const userData = {
+                name: document.getElementById('regName').value,
+                email: document.getElementById('regEmail').value,
+                username: document.getElementById('regUsername').value,
+                password: password
+            };
+            
+            const result = await this.registerUser(userData);
+            
+            const alertDiv = document.getElementById('registerAlert');
+            alertDiv.style.display = 'block';
+            alertDiv.className = `alert alert-${result.success ? 'success' : 'danger'}`;
+            alertDiv.innerHTML = `<i class="fas fa-${result.success ? 'check-circle' : 'exclamation-circle'}"></i> ${result.message}`;
+            
+            if (result.success) {
+                registerForm.reset();
+                setTimeout(() => switchTab('login'), 2000);
+            }
+        });
+    }
+    
+    // Reset password form
+    const resetForm = document.getElementById('resetPasswordForm');
+    if (resetForm) {
+        resetForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('resetEmail').value;
+            const token = document.getElementById('resetToken').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            if (newPassword !== confirmPassword) {
+                const alertDiv = document.getElementById('resetAlert');
+                alertDiv.style.display = 'block';
+                alertDiv.className = 'alert alert-danger';
+                alertDiv.innerHTML = '<i class="fas fa-exclamation-circle"></i> Passwords do not match!';
+                return;
+            }
+            
+            const result = await this.resetPassword(email, token, newPassword);
+            
+            if (result.success) {
+                document.getElementById('resetAlert').style.display = 'none';
+                document.getElementById('resetContent').style.display = 'none';
+                document.getElementById('successContent').style.display = 'block';
+            } else {
+                const alertDiv = document.getElementById('resetAlert');
+                alertDiv.style.display = 'block';
+                alertDiv.className = 'alert alert-danger';
+                alertDiv.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${result.message}`;
+            }
+        });
+    }
+}
+
+// Call this in your init() method
+// Add: this.setupPasswordResetListeners();
 }
 
 // Initialize
