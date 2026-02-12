@@ -4,101 +4,60 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Roof4U - Dashboard</title>
-    <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background: #f5f7fa; }
+        .navbar { background: white; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 20px rgba(0,0,0,0.05); }
+        .nav-brand h1 { color: #667eea; display: flex; }
+        .nav-menu { display: flex; list-style: none; gap: 25px; }
+        .nav-menu a { text-decoration: none; color: #2c3e50; padding: 10px 20px; border-radius: 10px; }
+        .nav-menu a:hover, .nav-menu a.active { background: #667eea; color: white; }
+        .nav-user span { margin-right: 20px; }
+        .btn-logout { background: #e74c3c; color: white; border: none; padding: 10px 20px; border-radius: 10px; cursor: pointer; }
+        .dashboard { max-width: 1400px; margin: 0 auto; padding: 30px; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .stat-card { background: white; padding: 25px; border-radius: 18px; display: flex; align-items: center; gap: 20px; box-shadow: 0 5px 20px rgba(0,0,0,0.02); }
+        .stat-icon { width: 60px; height: 60px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 16px; display: flex; align-items: center; justify-content: center; color: white; font-size: 24px; }
+        .stat-card h3 { font-size: 2em; color: #2c3e50; }
+        .quick-actions { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-top: 30px; }
+        .action-card { background: white; padding: 25px; border-radius: 18px; text-align: center; text-decoration: none; color: #2c3e50; }
+        .action-card i { font-size: 32px; color: #667eea; margin-bottom: 15px; }
+        @media (max-width: 768px) { .quick-actions { grid-template-columns: 1fr; } }
+    </style>
 </head>
 <body>
-    <!-- Navigation -->
-     <nav class="navbar">
-        <div class="nav-brand">
-            <h1><i class="fas fa-house"></i> Roof4U</h1>
-        </div>
+    <nav class="navbar">
+        <div class="nav-brand"><h1><i class="fas fa-home"></i> Roof4U</h1></div>
         <ul class="nav-menu">
             <li><a href="roof4u.html" class="active">Dashboard</a></li>
             <li><a href="houses.html">Properties</a></li>
-            <li><a href="rent.html"> Rent Now</a></li>
+            <li><a href="rent.html">Rent Now</a></li>
             <li><a href="tenants.html">Tenants</a></li>
             <li><a href="payments.html">Payments</a></li>
             <li><a href="maintenance.html">Maintenance</a></li>
         </ul>
         <div class="nav-user">
-            <span id="currentUser">Admin</span>
-            <button id="logoutBtn" class="btn-logout">Logout</button>
+            <span id="currentUser"><i class="fas fa-user-circle"></i> Admin</span>
+            <button id="logoutBtn" class="btn-logout"><i class="fas fa-sign-out-alt"></i> Logout</button>
         </div>
     </nav>
-    
-    <!-- Dashboard Content -->
     <div class="dashboard">
-        <div class="dashboard-header">
-            <h2>Property Management Dashboard</h2>
-            <p>Welcome back! Here's your property overview.</p>
+        <h1 style="margin-bottom: 30px;">Dashboard</h1>
+        <div class="stats-grid">
+            <div class="stat-card"><div class="stat-icon"><i class="fas fa-home"></i></div><div><h3 id="totalProperties">0</h3><p>Properties</p></div></div>
+            <div class="stat-card"><div class="stat-icon"><i class="fas fa-user-check"></i></div><div><h3 id="occupiedProperties">0</h3><p>Occupied</p></div></div>
+            <div class="stat-card"><div class="stat-icon"><i class="fas fa-users"></i></div><div><h3 id="activeTenants">0</h3><p>Tenants</p></div></div>
+            <div class="stat-card"><div class="stat-icon"><i class="fas fa-dollar-sign"></i></div><div><h3 id="totalRevenue">$0</h3><p>Revenue</p></div></div>
+            <div class="stat-card"><div class="stat-icon"><i class="fas fa-tools"></i></div><div><h3 id="pendingMaintenance">0</h3><p>Maintenance</p></div></div>
         </div>
-        
-        <!-- Stats Cards -->
-        <div class="stats-grid" id="statsContainer">
-            <!-- Stats will be populated by JavaScript -->
-        </div>
-        
-        <!-- Recent Activities -->
-        <div class="dashboard-section">
-            <h3>Recent Activities</h3>
-            <div class="activity-list" id="activityList">
-                <!-- Activities will be populated by JavaScript -->
-            </div>
-        </div>
-        
-        <!-- Quick Actions -->
-        <div class="dashboard-section">
-            <h3>Quick Actions</h3>
-            <div class="quick-actions">
-                <a href="houses.html" class="action-card">
-                    <span>🏠</span>
-                    <h4>Add Property</h4>
-                </a>
-                <a href="rent.html" class="action-card">
-                    <span>👤</span>
-                    <h4>Add Tenant</h4>
-                </a>
-                <a href="payments.html" class="action-card">
-                    <span>💰</span>
-                    <h4>Record Payment</h4>
-                </a>
-                <a href="maintenance.html" class="action-card">
-                    <span>🔧</span>
-                    <h4>Create Maintenance Ticket</h4>
-                </a>
-            </div>
+        <div class="quick-actions">
+            <a href="houses.html" class="action-card"><i class="fas fa-plus-circle"></i><h3>Add Property</h3><p>List new rental</p></a>
+            <a href="tenants.html" class="action-card"><i class="fas fa-user-plus"></i><h3>Add Tenant</h3><p>New resident</p></a>
+            <a href="payments.html" class="action-card"><i class="fas fa-money-bill"></i><h3>Record Payment</h3><p>Rent received</p></a>
+            <a href="maintenance.html" class="action-card"><i class="fas fa-wrench"></i><h3>Maintenance</h3><p>Create ticket</p></a>
         </div>
     </div>
-
-    <!-- Simple Footer -->
-<footer class="simple-footer">
-    <div class="footer-container">
-        <div class="footer-content">
-            <div class="footer-logo">
-                <h3><i class="fas fa-home"></i> Roof4U</h3>
-                <p>Property Management System</p>
-            </div>
-            
-            <div class="footer-links">
-                <a href="roof4u.html">Dashboard</a>
-                <a href="houses.html">Properties</a>
-                <a href="rent.html">Rent Now</a>
-                <a href="tenants.html">Tenants</a>
-                <a href="payments.html">Payments</a>
-                <a href="maintenance.html">Maintenance</a>
-            </div>
-            
-            <div class="footer-info">
-                <p><i class="fas fa-envelope"></i> support@roof4u.com</p>
-                <p><i class="fas fa-phone"></i> (555) 123-4567</p>
-                <p class="copyright">© 2026 Roof4U. All rights reserved.</p>
-            </div>
-        </div>
-    </div>
-</footer>
-    
     <script src="roof4u.js"></script>
-    
 </body>
 </html>
